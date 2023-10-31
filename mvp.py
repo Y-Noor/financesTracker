@@ -3,12 +3,19 @@ class AddIncomeSource():
         self.grandparents = {name: {
             'amount':amount,
             'accounts':{},
-            'children':{},
+            'category':{},
             'grandchildren':{}
             }}
     
-    def addAccount(self, grandparent, name):
-        self.grandparents[grandparent]['accounts'] = {name:{}} 
+    def addAccount(self, grandparent, name, weight):
+        identifier = weight[0]
+        print(name)
+        print(weight)
+        if identifier == 'f':
+            self.grandparents[grandparent]['accounts'] = {name:self.grandparents[grandparent]['amount']-float(weight[1:])}
+        elif identifier == '%':
+            self.grandparents[grandparent]['accounts'] = {name:self.grandparents[grandparent]['amount']*float(weight[1:])/100}
+            print(self.grandparents)
 
     def check(self):
         print()
@@ -16,7 +23,7 @@ class AddIncomeSource():
             print('Grandparent: ', grandparent)
             print('Amount:', self.grandparents[grandparent]['amount'])
             print('Parents', self.grandparents[grandparent]['accounts'])
-            print('Children', self.grandparents[grandparent]['children'])
+            print('Category', self.grandparents[grandparent]['category'])
             print('Grandchildren', self.grandparents[grandparent]['grandchildren'])
 
         print() 
@@ -38,14 +45,25 @@ def main():
         case '-1':
             status = False
         case '1':
-            name = input('input name: ')
+            incomeSrcName = input('input name: ')
             amount = float(input('Input amount: '))
-            incomeSrc = AddIncomeSource(name, amount)       
+            incomeSrc = AddIncomeSource(incomeSrcName, amount)
+            savingsBool = input('Do you want a savings account with this income source? (y/n): ')
+            if savingsBool == 'y':
+                flatOrPercentage = input('Flat or percentage for savings account? (f/p)')
+                if flatOrPercentage == 'f':
+                    flatAmt = 'f' + input('Input flat amount: ')
+                    incomeSrc.addAccount(incomeSrcName, 'Savings', flatAmt)
+                elif flatOrPercentage == 'p':
+                    percentage = '%' + input('Input percentage of amount to add to savings: ')
+                    incomeSrc.addAccount(incomeSrcName, 'Savings', percentage)
+            incomeSrc.check()
         case '2':
-            incomeSrc.addAccount(name, 'jajaja')
+            accountName = input('Input name of new account: ')
+            incomeSrc.addAccount(incomeSrcName, accountName)
         case '3':
             incomeSrc.check()
-
+    
     return status
 if __name__ == '__main__':
     status = True
