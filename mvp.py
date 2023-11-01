@@ -1,12 +1,27 @@
-class AddIncomeSource():
-    def __init__(self, name, amount):
-        self.grandparents = {name: {
-            'amount':amount,
-            'accounts':{},
-            'category':{},
-            'grandchildren':{}
-            }}
-    
+import pickle
+
+userData = None
+
+class Schema():
+    def __init__(self):
+        self.grandparents = {}
+        
+
+        #self.grandparents[name] = {
+         #       'amount':amount,
+          #      'accounts':{},
+           #     'category':{},
+            #    'grandchildren':{}
+            #}
+    def addIncomeSource(self, sourceName, amount):
+        self.grandparents[sourceName] = {
+                'amount': amount,
+                'accounts': {},
+                'category': {},
+                'grandchildren': {}
+                }
+
+
     def addAccount(self, grandparent, name, weight):
         identifier = weight[0]
         print(name)
@@ -25,13 +40,33 @@ class AddIncomeSource():
             print('Parents', self.grandparents[grandparent]['accounts'])
             print('Category', self.grandparents[grandparent]['category'])
             print('Grandchildren', self.grandparents[grandparent]['grandchildren'])
-
+            print()
         print() 
-        print()
+        print(self.grandparents)
+        
+
+    def getSources(self):
+        return [key for key in  self.grandparents]
+
+def save():
+    with  open('finances', 'wb') as f:    
+        pickle.dump(userData, f)
+
+def loadUserdata():
+    global userData
+    try:
+        with open('finances', 'rb') as f:
+            userData =  pickle.load(f)
+    except FileNotFoundError:
+        print('no current save file')
+        userData = Schema()
+
 
 
 def main():
+    global userData
     status = True
+
     print('''
 1. Add recurring income source
 2. Add Account
@@ -47,26 +82,34 @@ def main():
         case '1':
             incomeSrcName = input('input name: ')
             amount = float(input('Input amount: '))
-            incomeSrc = AddIncomeSource(incomeSrcName, amount)
+            userData.addIncomeSource(incomeSrcName, amount)
             savingsBool = input('Do you want a savings account with this income source? (y/n): ')
             if savingsBool == 'y':
                 flatOrPercentage = input('Flat or percentage for savings account? (f/p)')
                 if flatOrPercentage == 'f':
                     flatAmt = 'f' + input('Input flat amount: ')
-                    incomeSrc.addAccount(incomeSrcName, 'Savings', flatAmt)
+                    userData.addAccount(incomeSrcName, 'Savings', flatAmt)
                 elif flatOrPercentage == 'p':
                     percentage = '%' + input('Input percentage of amount to add to savings: ')
-                    incomeSrc.addAccount(incomeSrcName, 'Savings', percentage)
-            incomeSrc.check()
+                    userData.addAccount(incomeSrcName, 'Savings', percentage)
+
         case '2':
-            accountName = input('Input name of new account: ')
-            incomeSrc.addAccount(incomeSrcName, accountName)
+            #accountName = input('Input name of new account: ')
+            for i in userData.getSources():
+                print(i)
+            #userData.addAccount(incomeSrcName, accountName)
         case '3':
-            incomeSrc.check()
-    
+            userData.check()
+    save()
     return status
+
+
+
+    
 if __name__ == '__main__':
     status = True
+    if userData == None:
+        loadUserdata()
     while(status):
         status = main()
         print(status)
