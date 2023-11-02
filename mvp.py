@@ -6,30 +6,25 @@ class Schema():
     def __init__(self):
         self.grandparents = {}
         
-
-        #self.grandparents[name] = {
-         #       'amount':amount,
-          #      'accounts':{},
-           #     'category':{},
-            #    'grandchildren':{}
-            #}
     def addIncomeSource(self, sourceName, amount):
         self.grandparents[sourceName] = {
                 'amount': amount,
-                'accounts': {},
-                'category': {},
-                'grandchildren': {}
+                'accounts': [],
+                'remaining':amount
                 }
 
 
     def addAccount(self, grandparent, name, weight):
         identifier = weight[0]
-        print(name)
-        print(weight)
+        remaining = self.grandparents[grandparent]['remaining']
         if identifier == 'f':
-            self.grandparents[grandparent]['accounts'] = {name:self.grandparents[grandparent]['amount']-float(weight[1:])}
+            val = remaining - float(weight[1:])
+            self.grandparents[grandparent]['remaining'] = remaining - val
+            self.grandparents[grandparent]['accounts'].append({'name':name, 'weight':weight, 'weight value': val, 'current':val})
         elif identifier == '%':
-            self.grandparents[grandparent]['accounts'] = {name:self.grandparents[grandparent]['amount']*float(weight[1:])/100}
+            val = remaining * float(weight[1:])/100
+            self.grandparents[grandparent]['remaining'] = remaining - val
+            self.grandparents[grandparent]['accounts'].append({'name':name, 'weight':weight, 'weight value':val, 'current':val})
             print(self.grandparents)
 
     def check(self):
@@ -38,8 +33,6 @@ class Schema():
             print('Grandparent: ', grandparent)
             print('Amount:', self.grandparents[grandparent]['amount'])
             print('Parents', self.grandparents[grandparent]['accounts'])
-            print('Category', self.grandparents[grandparent]['category'])
-            print('Grandchildren', self.grandparents[grandparent]['grandchildren'])
             print()
         print() 
         print(self.grandparents)
@@ -94,11 +87,18 @@ def main():
                     userData.addAccount(incomeSrcName, 'Savings', percentage)
 
         case '2':
-            #accountName = input('Input name of new account: ')
-            for i in userData.getSources():
-                print(i)
-            #userData.addAccount(incomeSrcName, accountName)
+            inputSources = userData.getSources()
+            incomeSrcName = input(f'Input name of input source{inputSources}: ')
+            accountName = input('Input name of new account: ')
+            flatOrPercentage = input('Flat or percentagefor account? (f/p)')
+            if flatOrPercentage == 'f':
+                weight = 'f' + input('Input flat amount')
+            elif flatOrPercentage == 'p':
+                weight = '%' + input('Input percentage of amount to go to this account: ')
+            userData.addAccount(incomeSrcName, accountName, weight)
         case '3':
+            pass
+        case '4':
             userData.check()
     save()
     return status
