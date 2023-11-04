@@ -1,5 +1,4 @@
 import pickle
-
 userData = None
 
 class Schema():
@@ -22,32 +21,45 @@ class Schema():
         takeFromRemainingOrTakeFromSrc = input("Take from income source total or what is left over?(src/l): ")
         if takeFromRemainingOrTakeFromSrc == "src":
             if identifier == 'f':
-                val = remaining - float(weight[1:])
+                val = float(weight[1:])
                 self.grandparents[grandparent]['accounts'].append({'name':name, 'weight':weight, 'weight value': val, 'current':val})
                 self.grandparents[grandparent]['remaining'] = remaining - val
             elif identifier == '%':
                 val = amount * (float(weight[1:])/100)
                 self.grandparents[grandparent]['accounts'].append({'name':name, 'weight':weight, 'weight value':val, 'current':val})
-                self.grandparents[grandparent]['remaining'] = remaining - val
-            
+                                                                                                                                         
          
 
         elif takeFromRemainingOrTakeFromSrc == "l":
-            pass
+            if identifier == 'f':
+                val = float(weight[1:])
+                self.grandparents[grandparent]['accounts'].append({'name':name, 'weight':weight, 'weight value': val, 'current':val})
+                self.grandparents[grandparent]['remaining'] = remaining - val
+            elif identifier == '%':
+                val = remaining * (float(weight[1:])/100)
+                self.grandparents[grandparent]['accounts'].append({'name':name, 'weight':weight, 'weight value':val, 'current':val})
+        
 
 
+        self.grandparents[grandparent]['remaining'] = remaining - val
+                                                                                                                                    
 
     def check(self):
         print()
         for grandparent in self.grandparents:
+            print("==================================================")
             print('Grandparent: ', grandparent)
             print('Amount:', self.grandparents[grandparent]['amount'])
-            
+            print('Remaining:', self.grandparents[grandparent]['remaining'])
+
             for parent in self.grandparents[grandparent]['accounts']:
                 print(parent)
             print()
-        print() 
-        
+            print("==================================================")
+            print() 
+        print(                                                   )       
+
+
 
     def getSources(self):
         return [key for key in  self.grandparents]
