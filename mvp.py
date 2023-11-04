@@ -17,25 +17,36 @@ class Schema():
     def addAccount(self, grandparent, name, weight):
         identifier = weight[0]
         remaining = self.grandparents[grandparent]['remaining']
-        if identifier == 'f':
-            val = remaining - float(weight[1:])
-            self.grandparents[grandparent]['remaining'] = remaining - val
-            self.grandparents[grandparent]['accounts'].append({'name':name, 'weight':weight, 'weight value': val, 'current':val})
-        elif identifier == '%':
-            val = remaining * float(weight[1:])/100
-            self.grandparents[grandparent]['remaining'] = remaining - val
-            self.grandparents[grandparent]['accounts'].append({'name':name, 'weight':weight, 'weight value':val, 'current':val})
-            print(self.grandparents)
+        amount = self.grandparents[grandparent]['amount']
+        
+        takeFromRemainingOrTakeFromSrc = input("Take from income source total or what is left over?(src/l): ")
+        if takeFromRemainingOrTakeFromSrc == "src":
+            if identifier == 'f':
+                val = remaining - float(weight[1:])
+                self.grandparents[grandparent]['accounts'].append({'name':name, 'weight':weight, 'weight value': val, 'current':val})
+                self.grandparents[grandparent]['remaining'] = remaining - val
+            elif identifier == '%':
+                val = amount * (float(weight[1:])/100)
+                self.grandparents[grandparent]['accounts'].append({'name':name, 'weight':weight, 'weight value':val, 'current':val})
+                self.grandparents[grandparent]['remaining'] = remaining - val
+            
+         
+
+        elif takeFromRemainingOrTakeFromSrc == "l":
+            pass
+
+
 
     def check(self):
         print()
         for grandparent in self.grandparents:
             print('Grandparent: ', grandparent)
             print('Amount:', self.grandparents[grandparent]['amount'])
-            print('Parents', self.grandparents[grandparent]['accounts'])
+            
+            for parent in self.grandparents[grandparent]['accounts']:
+                print(parent)
             print()
         print() 
-        print(self.grandparents)
         
 
     def getSources(self):
