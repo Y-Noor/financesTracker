@@ -22,22 +22,22 @@ class Schema():
         if takeFromRemainingOrTakeFromSrc == "src":
             if identifier == 'f':
                 val = float(weight[1:])
-                self.grandparents[grandparent]['accounts'].append({'name':name, 'weight':weight, 'weight value': val, 'current':val})
+                self.grandparents[grandparent]['accounts'].append({'name':name, 'weight':weight, 'srcOrLeft':takeFromRemainingOrTakeFromSrc, 'weight value': val, 'current':val})
                 self.grandparents[grandparent]['remaining'] = remaining - val
             elif identifier == '%':
                 val = amount * (float(weight[1:])/100)
-                self.grandparents[grandparent]['accounts'].append({'name':name, 'weight':weight, 'weight value':val, 'current':val})
+                self.grandparents[grandparent]['accounts'].append({'name':name, 'weight':weight, 'srcOrLeft':takeFromRemainingOrTakeFromSrc, 'weight value':val, 'current':val})
                                                                                                                                          
          
 
         elif takeFromRemainingOrTakeFromSrc == "l":
             if identifier == 'f':
                 val = float(weight[1:])
-                self.grandparents[grandparent]['accounts'].append({'name':name, 'weight':weight, 'weight value': val, 'current':val})
+                self.grandparents[grandparent]['accounts'].append({'name':name, 'weight':weight, 'srcOrLeft':takeFromRemainingOrTakeFromSrc, 'weight value': val, 'current':val})
                 self.grandparents[grandparent]['remaining'] = remaining - val
             elif identifier == '%':
                 val = remaining * (float(weight[1:])/100)
-                self.grandparents[grandparent]['accounts'].append({'name':name, 'weight':weight, 'weight value':val, 'current':val})
+                self.grandparents[grandparent]['accounts'].append({'name':name, 'weight':weight, 'srcOrLeft':takeFromRemainingOrTakeFromSrc, 'weight value':val, 'current':val})
         
 
 
