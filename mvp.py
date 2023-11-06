@@ -8,7 +8,7 @@ class Schema():
     def addIncomeSource(self, sourceName, amount):
         self.grandparents[sourceName] = {
                 "amount": amount,
-                "accounts": [],
+                "accounts": {},
                 "remaining":amount
                 }
 
@@ -25,29 +25,38 @@ class Schema():
         if takeFromRemainingOrTakeFromSrc == "src":
             if identifier == 'f':
                 val = float(weight[1:])
-                self.grandparents[grandparent]["accounts"].append({"name":name, "weight":weight, "srcOrLeft":takeFromRemainingOrTakeFromSrc, "weight value": val, "current":val})
+                self.grandparents[grandparent]["accounts"][name] = {"weight":weight, "srcOrLeft":takeFromRemainingOrTakeFromSrc, "weight value": val, "current":val}
                 self.grandparents[grandparent]["remaining"] = remaining - val
             elif identifier == '%':
                 val = amount * (float(weight[1:])/100)
-                self.grandparents[grandparent]["accounts"].append({"name":name, "weight":weight, "srcOrLeft":takeFromRemainingOrTakeFromSrc, "weight value":val, "current":val})
+                self.grandparents[grandparent]["accounts"][name] = {"weight":weight, "srcOrLeft":takeFromRemainingOrTakeFromSrc, "weight value":val, "current":val}
                                                                                                                                          
          
 
         elif takeFromRemainingOrTakeFromSrc == 'l':
             if identifier == 'f':
                 val = float(weight[1:])
-                self.grandparents[grandparent]["accounts"].append({"name":name, "weight":weight, "srcOrLeft":takeFromRemainingOrTakeFromSrc, "weight value": val, "current":val})
+                self.grandparents[grandparent]["accounts"][name] = {"weight":weight, "srcOrLeft":takeFromRemainingOrTakeFromSrc, "weight value": val, "current":val}
                 self.grandparents[grandparent]["remaining"] = remaining - val
             elif identifier == '%':
                 val = remaining * (float(weight[1:])/100)
-                self.grandparents[grandparent]["accounts"].append({"name":name, "weight":weight, "srcOrLeft":takeFromRemainingOrTakeFromSrc, "weight value":val, "current":val})
+                self.grandparents[grandparent]["accounts"][name] = {"weight":weight, "srcOrLeft":takeFromRemainingOrTakeFromSrc, "weight value":val, "current":val}
         
 
 
         self.grandparents[grandparent]["remaining"] = remaining - val
                                                                                                                                     
 
+    def addCategory(self, grandparent, parent, name, weight):
+        identifier = weight[0]
+        remaining = self.grandparents[grandparent][parent]['children']
+
+
     def check(self):
+        print()
+        print()
+        print(self.grandparents)
+        print()
         print()
         for grandparent in self.grandparents:
             print("==================================================")
