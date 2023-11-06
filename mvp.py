@@ -49,14 +49,14 @@ class Schema():
     def addCategory(self, grandparent, parent, child, weight):
         identifier = weight[0]
         takeFromRemainingOrTakeFromSrc = input("Take from income source total or what is left over?(src/l): ")
-        amount = self.grandparents[grandparent]["accounts"][parent]["current"] 
-        remainder = self.grandparents[grandparent]["accounts"][parent]["current val"]
+        amount = self.grandparents[grandparent]["accounts"][parent]["weight value"] 
+        remainder = self.grandparents[grandparent]["accounts"][parent]["current"]
         
         if takeFromRemainingOrTakeFromSrc == "src":
             if identifier == 'f':
                 val = float(weight[1:])
             elif identifier == '%':
-                val = float(weight[1:]) * amount
+                val = float(weight[1:]) * amount / 100
 
 
         elif takeFromRemainingOrTakeFromSrc == 'l':
@@ -64,13 +64,12 @@ class Schema():
             if identifier == 'f':
                 val = float(weight[1:])
             elif identifier == '%':
-                val = float(weight[1:]) * remainder
+                val = float(weight[1:]) * remainder / 100
 
         self.grandparents[grandparent]["accounts"][parent]["current val"] = remainder - val
             
         self.grandparents[grandparent]["accounts"][parent]["children"][child] = {"weight":weight, "weight value":val, "current":val, "children":{}}
 
-        self.grandparents[grandparent]["accounts"][parent]["current"] = amount - val
 
 
     def check(self):
