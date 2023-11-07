@@ -30,7 +30,7 @@ class Schema():
             elif identifier == '%':
                 val = amount * (float(weight[1:])/100)
                 self.grandparents[grandparent]["accounts"][name] = {"weight":weight, "srcOrLeft":takeFromRemainingOrTakeFromSrc, "weight value":val, "current":val, "children":{}}
-                                                                                                                                         
+                self.grandparents[grandparent]["remaining"] = remaining - val
 
         elif takeFromRemainingOrTakeFromSrc == 'l':
             if identifier == 'f':
@@ -42,9 +42,11 @@ class Schema():
                 self.grandparents[grandparent]["accounts"][name] = {"weight":weight, "srcOrLeft":takeFromRemainingOrTakeFromSrc, "weight value":val, "current":val, "children":{}}
         
 
-
+        if name == 'savings':
+            self.grandparents[grandparent]["remaining"] = self.grandparents[grandparent]["ammount"] - val
+        else:
             self.grandparents[grandparent]["remaining"] = remaining - val
-                                                                                                                                    
+                                                                                                                            
 
     def addCategory(self, grandparent, parent, child, weight):
         identifier = weight[0]
@@ -104,10 +106,10 @@ class Schema():
         return [key for key in self.grandparents[grandparent]["accounts"][parent]["children"]]
 
     
-    def addPurchase(self, grandparent, parent):
-        grandparent = input(f"Which income source do you want to spend from?{userData.getSources}: ")
+    def addPurchase(self):
+        grandparent = input(f"Which income source do you want to spend from?{userData.getSources()}: ")
         
-        parent = input(f"Which account  do you want to spend from?{userData.getParents}: ")
+        parent = input(f"Which account  do you want to spend from?{userData.getParents(grandparent)}: ")
         children = userData.getChildren(grandparent, parent)
         typeOfPurchase = input(f"Input type of purchase {children}: ")
         name = input("Purchase: ")
