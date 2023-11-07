@@ -100,6 +100,23 @@ class Schema():
     def getParents(self, grandparent):
         return [key for key in self.grandparents[grandparent]["accounts"]]
 
+    def getChildren(self, grandparent, parent):
+        return [key for key in self.grandparents[grandparent]["accounts"][parent]["children"]]
+
+    
+    def addPurchase(self, grandparent, parent):
+        children = userData.getChildren()
+        typeOfPurchase = input(f"Input type of purchase {children}: ")
+        name = input("Purchase: ")
+        cost = float(input("Cost: "))
+        i=entry = {name, cost}
+
+        self.grandparents[grandparent]["accounts"][parent]["children"][typeOfPurchase]["children"][name] = entry  
+
+
+        
+
+
 def save():
     with  open("finances", "wb") as f:    
         pickle.dump(userData, f)
@@ -171,7 +188,8 @@ def main():
             userData.addCategory(grandparent, parent, child, weight)
         
         case '4':
-            userData.check()
+            print(userData.getChildren('naveo', 'expenses'))
+            #userData.check()
     save()
     return status
 
