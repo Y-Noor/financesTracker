@@ -109,7 +109,7 @@ class Schema():
         typeOfPurchase = input(f"Input type of purchase {children}: ")
         name = input("Purchase: ")
         cost = float(input("Cost: "))
-        i=entry = {name, cost}
+        entry = {name, cost}
 
         self.grandparents[grandparent]["accounts"][parent]["children"][typeOfPurchase]["children"][name] = entry  
 
