@@ -105,14 +105,28 @@ class Schema():
 
     
     def addPurchase(self, grandparent, parent):
-        children = userData.getChildren()
+        grandparent = input(f"Which income source do you want to spend from?{userData.getSources}: ")
+        
+        parent = input(f"Which account  do you want to spend from?{userData.getParents}: ")
+        children = userData.getChildren(grandparent, parent)
         typeOfPurchase = input(f"Input type of purchase {children}: ")
         name = input("Purchase: ")
         cost = float(input("Cost: "))
-        entry = {name, cost}
+        current = self.grandparents[grandparent]["accounts"][parent]["children"][typeOfPurchase]["current"]
+        #use newCurrent to check for out of budget later on
+        newCurrent = current - cost 
+        description = input("Description of purchase: ")
 
-        self.grandparents[grandparent]["accounts"][parent]["children"][typeOfPurchase]["children"][name] = entry  
-
+        entry = {name, cost, description}
+    
+        confirm = input("Confirm purchase(y/n): ")
+        if confirm == 'y':
+            self.grandparents[grandparent]["accounts"][parent]["children"][typeOfPurchase]["children"][name] = entry  
+            self.grandparents[grandparent]["accounts"][parent]["children"][typeOfPurchase]["current"] = newCurrent 
+            self.grandparents[grandparent]["accounts"][parent]["current"] = self.grandparents[grandparent]["accounts"][parent]["current"] - cost
+            self.grandparents[grandparent]["remaining"] =  self.grandparents[grandparent]["remaining"] - cost 
+        else:
+            print("rip")
 
         
 
@@ -141,6 +155,7 @@ def main():
 2. Add Account
 3. Add Category
 4. Check
+5. Add purchase
 
 -1. exit
          """) 
@@ -188,8 +203,10 @@ def main():
             userData.addCategory(grandparent, parent, child, weight)
         
         case '4':
-            print(userData.getChildren('naveo', 'expenses'))
-            #userData.check()
+            userData.check()
+        
+        case '5':
+            userData.addPurchase()
     save()
     return status
 
