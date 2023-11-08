@@ -242,6 +242,7 @@ def main():
             userData.traverseTree()
         case '6':
             userData.removePurchase(userData.traverseTree())
+            #must update values of current and remaining
         case '9':
             userData.check()
     save()
