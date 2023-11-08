@@ -171,9 +171,10 @@ def main():
 1. Add recurring income source
 2. Add Account
 3. Add Category
-4. Check
-5. Add purchase
-6. traverse tree
+4. Add purchase
+5. Traverse Tree
+6. Check
+
 
 -1. exit
          """) 
@@ -187,7 +188,7 @@ def main():
             userData.addIncomeSource(incomeSrcName, amount)
             savingsBool = input("Do you want a savings account with this income source? (y/n): ")
             if savingsBool == 'y':
-                flatOrPercentage = input("Flat or percentage for savings account? (f/p)")
+                flatOrPercentage = input("Flat or percentage for savings account? (f/p): ")
                 if flatOrPercentage == 'f':
                     flatAmt = 'f' + input("Input flat amount: ")
                     userData.addAccount(incomeSrcName, "Savings", flatAmt)
@@ -199,7 +200,7 @@ def main():
             inputSources = userData.getSourcesList()
             incomeSrcName = input(f"Input name of input source{inputSources}: ")
             accountName = input("Input name of new account: ")
-            flatOrPercentage = input("Flat or percentagefor account? (f/p)")
+            flatOrPercentage = input("Flat or percentagefor account? (f/p): ")
             if flatOrPercentage == 'f':
                 weight = 'f' + input("Input flat amount")
             elif flatOrPercentage == 'p':
@@ -213,22 +214,21 @@ def main():
             inputSources = userData.getParentsList(grandparent)
             parent = input(f"Input name of account to add to{inputSources}: ")
             child = input("Input name of category to create: ")
-            flatOrPercentage = input("Flat or percentage for category? (f/p)")
+            flatOrPercentage = input("Flat or percentage for category? (f/p): ")
             if flatOrPercentage == 'f':
-                weight = 'f' + input("Input flat amount")
+                weight = 'f' + input("Input flat amount: ")
             elif flatOrPercentage == 'p':
                 weight = '%' + input("Input percentage of amount to go to this category: ")
             userData.addCategory(grandparent, parent, child, weight)
         
         case '4':
-            userData.check()
-        
-        case '5':
             userData.addPurchase()
     
-        case '6':
+        case '5':
             userData.traverseTree()
 
+        case '6':
+            userData.check()
     save()
     return status
 
