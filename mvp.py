@@ -96,21 +96,26 @@ class Schema():
 
 
 
-    def getSources(self):
+    def getSourcesList(self):
         return [key for key in  self.grandparents]
 
-    def getParents(self, grandparent):
+    def getParentsList(self, grandparent):
         return [key for key in self.grandparents[grandparent]["accounts"]]
 
-    def getChildren(self, grandparent, parent):
+    def getChildrenList(self, grandparent, parent):
         return [key for key in self.grandparents[grandparent]["accounts"][parent]["children"]]
 
+    def getGrandChildrenList(self, grandparent, parent, child):
+        return [key for key in self.grandparents[grandparent]["accounts"][parent]["children"][child]["children"]]
     
+    def getGrandChildData(self, grandparent, parent, child, grandchild):
+        return self.grandparents[grandparent]["accounts"][parent]["children"][child]["children"][grandchild]        
+
     def addPurchase(self):
-        grandparent = input(f"Which income source do you want to spend from?{userData.getSources()}: ")
+        grandparent = input(f"Which income source do you want to spend from?{userData.getSourcesList()}: ")
         
-        parent = input(f"Which account  do you want to spend from?{userData.getParents(grandparent)}: ")
-        children = userData.getChildren(grandparent, parent)
+        parent = input(f"Which account  do you want to spend from?{userData.getParentsList(grandparent)}: ")
+        children = userData.getChildrenList(grandparent, parent)
         typeOfPurchase = input(f"Input type of purchase {children}: ")
         name = input("Purchase: ")
         cost = float(input("Cost: "))
@@ -130,7 +135,17 @@ class Schema():
         else:
             print("rip")
 
-        
+    def traverseTree(self):
+        grandparents = userData.getSourcesList()
+        for grandparent in grandparents:
+            parents = userData.getParentsList(grandparent)
+            for parent in parents:
+                children = userData.getChildrenList(grandparent, parent)
+                for child in children:
+                    grandChildren = userData.getGrandChildrenList(grandparent, parent, child)
+                    for grandChild in grandChildren:
+                        print(grandparent, " -> ", parent, " -> ", child, " -> ", grandChild, " -> ", userData.getGrandChildData(grandparent, parent, child, grandChild))
+
 
 
 def save():
@@ -158,6 +173,7 @@ def main():
 3. Add Category
 4. Check
 5. Add purchase
+6. traverse tree
 
 -1. exit
          """) 
@@ -180,7 +196,7 @@ def main():
                     userData.addAccount(incomeSrcName, "Savings", percentage)
 
         case '2':
-            inputSources = userData.getSources()
+            inputSources = userData.getSourcesList()
             incomeSrcName = input(f"Input name of input source{inputSources}: ")
             accountName = input("Input name of new account: ")
             flatOrPercentage = input("Flat or percentagefor account? (f/p)")
@@ -191,10 +207,10 @@ def main():
             userData.addAccount(incomeSrcName, accountName, weight)
         
         case '3': 
-            inputSources = userData.getSources()
+            inputSources = userData.getSourcesList()
             grandparent = input(f"Input name of input source{inputSources}: ")
             
-            inputSources = userData.getParents(grandparent)
+            inputSources = userData.getParentsList(grandparent)
             parent = input(f"Input name of account to add to{inputSources}: ")
             child = input("Input name of category to create: ")
             flatOrPercentage = input("Flat or percentage for category? (f/p)")
@@ -209,6 +225,10 @@ def main():
         
         case '5':
             userData.addPurchase()
+    
+        case '6':
+            userData.traverseTree()
+
     save()
     return status
 
