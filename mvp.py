@@ -136,6 +136,7 @@ class Schema():
             print("rip")
 
     def traverseTree(self):
+        dct = {}
         grandparents = userData.getSourcesList()
         for grandparent in grandparents:
             parents = userData.getParentsList(grandparent)
@@ -145,6 +146,18 @@ class Schema():
                     grandChildren = userData.getGrandChildrenList(grandparent, parent, child)
                     for grandChild in grandChildren:
                         print(grandparent, " -> ", parent, " -> ", child, " -> ", grandChild, " -> ", userData.getGrandChildData(grandparent, parent, child, grandChild))
+                        dct[grandChild] = [grandparent, parent, child]
+        return dct
+    
+    def removePurchase(self, dct):
+        items = [x for x in dct]
+        toRemove = input(f"Which item to remove {items}")
+        grandparent = dct[toRemove][0]
+        parent = dct[toRemove][1]
+        child = dct[toRemove][2]
+
+
+        del self.grandparents[grandparent]["accounts"][parent]["children"][child]["children"][toRemove]
 
 
 
@@ -173,7 +186,8 @@ def main():
 3. Add Category
 4. Add purchase
 5. Traverse Tree
-6. Check
+6. Remove item
+9. Check
 
 
 -1. exit
@@ -226,8 +240,9 @@ def main():
     
         case '5':
             userData.traverseTree()
-
         case '6':
+            userData.removePurchase(userData.traverseTree())
+        case '9':
             userData.check()
     save()
     return status
