@@ -132,7 +132,7 @@ class Schema():
         newCurrent = current - cost 
         description = input("Description of purchase: ")
 
-        entry = {name, cost, description}
+        entry = [name, cost, description]
     
         confirm = input("Confirm purchase(y/n): ")
         if confirm == 'y':
@@ -168,10 +168,13 @@ class Schema():
         parent = dct[toRemove][1]
         child = dct[toRemove][2]
 
+        #del self.grandparents[grandparent]["accounts"][parent]["children"][child]["children"][toRemove]
+        
+        redistribute = self.grandparents[grandparent]["accounts"][parent]["children"][child]["children"][toRemove][1]
+        
 
-        del self.grandparents[grandparent]["accounts"][parent]["children"][child]["children"][toRemove]
-
-
+        self.grandparents[grandparent]["accounts"][parent]["current"] = self.grandparents[grandparent]["accounts"][parent]["current"] + redistribute
+        self.grandparents[grandparent]["remaining"] =  self.grandparents[grandparent]["remaining"] + redistribute
 
 def save():
     with  open("finances", "wb") as f:    
