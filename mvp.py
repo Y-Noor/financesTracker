@@ -2,9 +2,11 @@ import pickle
 userData = None
 
 class Schema():
+    #constructor
     def __init__(self):
         self.grandparents = {}
-        
+    
+    #method to add income source
     def addIncomeSource(self, sourceName, amount):
         self.grandparents[sourceName] = {
                 "amount": amount,
@@ -12,7 +14,7 @@ class Schema():
                 "remaining":amount
                 }
 
-
+    #method to add account
     def addAccount(self, grandparent, name, weight):
         identifier = weight[0]
         remaining = self.grandparents[grandparent]["remaining"]
@@ -47,7 +49,7 @@ class Schema():
         else:
             self.grandparents[grandparent]["remaining"] = remaining - val
                                                                                                                             
-
+    #method to add category                                                                                                                        
     def addCategory(self, grandparent, parent, child, weight):
         identifier = weight[0]
         takeFromRemainingOrTakeFromSrc = input("Take from income source total or what is left over?(src/l): ")
@@ -73,7 +75,7 @@ class Schema():
         self.grandparents[grandparent]["accounts"][parent]["children"][child] = {"weight":weight, "weight value":val, "current":val, "children":{}}
 
 
-
+    #method to check account data
     def check(self):
         print()
         print()
@@ -96,21 +98,27 @@ class Schema():
 
 
 
+    #get all keys from sources
     def getSourcesList(self):
         return [key for key in  self.grandparents]
 
+    #method to get parent keys
     def getParentsList(self, grandparent):
         return [key for key in self.grandparents[grandparent]["accounts"]]
 
+    #method to get children data
     def getChildrenList(self, grandparent, parent):
         return [key for key in self.grandparents[grandparent]["accounts"][parent]["children"]]
 
+    #method to get all grandchildren keys
     def getGrandChildrenList(self, grandparent, parent, child):
         return [key for key in self.grandparents[grandparent]["accounts"][parent]["children"][child]["children"]]
     
+    #method to get all grandchildre information
     def getGrandChildData(self, grandparent, parent, child, grandchild):
         return self.grandparents[grandparent]["accounts"][parent]["children"][child]["children"][grandchild]        
 
+    #method to add purchase
     def addPurchase(self):
         grandparent = input(f"Which income source do you want to spend from?{userData.getSourcesList()}: ")
         
@@ -135,6 +143,8 @@ class Schema():
         else:
             print("rip")
 
+
+    #method to traverse tree and show traversal
     def traverseTree(self):
         dct = {}
         grandparents = userData.getSourcesList()
@@ -148,7 +158,9 @@ class Schema():
                         print(grandparent, " -> ", parent, " -> ", child, " -> ", grandChild, " -> ", userData.getGrandChildData(grandparent, parent, child, grandChild))
                         dct[grandChild] = [grandparent, parent, child]
         return dct
-    
+   
+
+   #method to remove purchase
     def removePurchase(self, dct):
         items = [x for x in dct]
         toRemove = input(f"Which item to remove {items}")
