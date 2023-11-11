@@ -139,7 +139,6 @@ class Schema():
             self.grandparents[grandparent]["accounts"][parent]["children"][typeOfPurchase]["children"][name] = entry  
             self.grandparents[grandparent]["accounts"][parent]["children"][typeOfPurchase]["current"] = newCurrent 
             self.grandparents[grandparent]["accounts"][parent]["current"] = self.grandparents[grandparent]["accounts"][parent]["current"] - cost
-            self.grandparents[grandparent]["remaining"] =  self.grandparents[grandparent]["remaining"] - cost 
         else:
             print("rip")
 
