@@ -1,1 +1,2 @@
 # financesTracker
+TL:DR
