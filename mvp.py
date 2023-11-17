@@ -17,6 +17,7 @@ class Schema():
     #method to add account
     def addAccount(self, grandparent, name, weight):
         identifier = weight[0]
+        flag = True
         remaining = self.grandparents[grandparent]["remaining"]
         amount = self.grandparents[grandparent]["amount"]
        
@@ -24,30 +25,53 @@ class Schema():
             takeFromRemainingOrTakeFromSrc = input("Take from income source total or what is left over?(src/l): ")
         else:
             takeFromRemainingOrTakeFromSrc = "src"
-        if takeFromRemainingOrTakeFromSrc == "src":
-            if identifier == 'f':
-                val = float(weight[1:])
-                self.grandparents[grandparent]["accounts"][name] = {"weight":weight, "srcOrLeft":takeFromRemainingOrTakeFromSrc, "weight value": val, "current":val, "children":{}}
-                self.grandparents[grandparent]["remaining"] = remaining - val
-            elif identifier == '%':
-                val = amount * (float(weight[1:])/100)
-                self.grandparents[grandparent]["accounts"][name] = {"weight":weight, "srcOrLeft":takeFromRemainingOrTakeFromSrc, "weight value":val, "current":val, "children":{}}
-                self.grandparents[grandparent]["remaining"] = remaining - val
+        while flag:
+            if takeFromRemainingOrTakeFromSrc == "src":
+                if identifier == 'f':
+                    val = float(weight[1:])
+                    if verifyBalance(remaining, val):
+                        self.grandparents[grandparent]["accounts"][name] = {"weight":weight, "srcOrLeft":takeFromRemainingOrTakeFromSrc, "weight value": val, "current":val, "children":{}}
+                        self.grandparents[grandparent]["remaining"] = remaining - val
+                        flag = False
+                    else:
+                        print("Not enough money remaing")
+                elif identifier == '%':
+                    val = amount * (float(weight[1:])/100)
+                    if verifyBalance(remaining, val):
+                        self.grandparents[grandparent]["accounts"][name] = {"weight":weight, "srcOrLeft":takeFromRemainingOrTakeFromSrc, "weight value":val, "current":val, "children":{}}
+                        self.grandparents[grandparent]["remaining"] = remaining - val
+                        flag = False
+                    else:
+                        print("Not enough money remaing")
+            elif takeFromRemainingOrTakeFromSrc == 'l':
+                if identifier == 'f':
+                    val = float(weight[1:])
+                    if verifyBalance(remaining, val):
+                        self.grandparents[grandparent]["accounts"][name] = {"weight":weight, "srcOrLeft":takeFromRemainingOrTakeFromSrc, "weight value": val, "current":val, "children":{}}
+                        self.grandparents[grandparent]["remaining"] = remaining - val
+                        flag = False
+                    else:
+                        print("Not enough money remaing")
+                elif identifier == '%':
+                    val = remaining * (float(weight[1:])/100)
+                    if verifyBalance(remaining, val):
+                        self.grandparents[grandparent]["accounts"][name] = {"weight":weight, "srcOrLeft":takeFromRemainingOrTakeFromSrc, "weight value":val, "current":val, "children":{}}
+                        flag = False
+                    else:
+                         print("Not enough money remaing")
 
-        elif takeFromRemainingOrTakeFromSrc == 'l':
-            if identifier == 'f':
-                val = float(weight[1:])
-                self.grandparents[grandparent]["accounts"][name] = {"weight":weight, "srcOrLeft":takeFromRemainingOrTakeFromSrc, "weight value": val, "current":val, "children":{}}
-                self.grandparents[grandparent]["remaining"] = remaining - val
-            elif identifier == '%':
-                val = remaining * (float(weight[1:])/100)
-                self.grandparents[grandparent]["accounts"][name] = {"weight":weight, "srcOrLeft":takeFromRemainingOrTakeFromSrc, "weight value":val, "current":val, "children":{}}
-        
-
-        if name == 'savings':
-            self.grandparents[grandparent]["remaining"] = self.grandparents[grandparent]["ammount"] - val
-        else:
-            self.grandparents[grandparent]["remaining"] = remaining - val
+            if name == 'savings':
+                if verifyBalance(remaining, val):
+                    self.grandparents[grandparent]["remaining"] = self.grandparents[grandparent]["ammount"] - val
+                    flag = False
+                else:
+                  print("Not enough money remaing")
+            else:
+                if verifyBalance(remaining, val):
+                    flag = False
+                    self.grandparents[grandparent]["remaining"] = remaining - val
+                else:
+                  print("Not enough money remaing")
                                                                                                                             
     #method to add category                                                                                                                        
     def addCategory(self, grandparent, parent, child, weight):
@@ -61,7 +85,7 @@ class Schema():
                 val = float(weight[1:])
             elif identifier == '%':
                 val = float(weight[1:]) * amount / 100
-
+            
 
         elif takeFromRemainingOrTakeFromSrc == 'l':
 
@@ -70,10 +94,13 @@ class Schema():
             elif identifier == '%':
                 val = float(weight[1:]) * remainder / 100
 
-        self.grandparents[grandparent]["accounts"][parent]["current val"] = remainder - val
+        if verifyBalance(remaining, val):
+            flag = False
+            self.grandparents[grandparent]["accounts"][parent]["current val"] = remainder - val
             
-        self.grandparents[grandparent]["accounts"][parent]["children"][child] = {"weight":weight, "weight value":val, "current":val, "children":{}}
-
+              self.grandparents[grandparent]["accounts"][parent]["children"][child] = {"weight":weight, "weight value":val, "current":val, "children":{}}
+        else:
+            print("Not enough money remaing")
 
     #method to check account data
     def check(self):
@@ -120,27 +147,33 @@ class Schema():
 
     #method to add purchase
     def addPurchase(self):
-        grandparent = input(f"Which income source do you want to spend from?{userData.getSourcesList()}: ")
-        
-        parent = input(f"Which account  do you want to spend from?{userData.getParentsList(grandparent)}: ")
-        children = userData.getChildrenList(grandparent, parent)
-        typeOfPurchase = input(f"Input type of purchase {children}: ")
-        name = input("Purchase: ")
-        cost = float(input("Cost: "))
-        current = self.grandparents[grandparent]["accounts"][parent]["children"][typeOfPurchase]["current"]
-        #use newCurrent to check for out of budget later on
-        newCurrent = current - cost 
-        description = input("Description of purchase: ")
+        flag = typeOfPurchase
+        while flag:
+            grandparent = input(f"Which income source do you want to spend from?{userData.getSourcesList()}: ")
+            
+            parent = input(f"Which account  do you want to spend from?{userData.getParentsList(grandparent)}: ")
+            children = userData.getChildrenList(grandparent, parent)
+            typeOfPurchase = input(f"Input type of purchase {children}: ")
+            name = input("Purchase: ")
+            cost = float(input("Cost: "))
+            current = self.grandparents[grandparent]["accounts"][parent]["children"][typeOfPurchase]["current"]
+            #use newCurrent to check for out of budget later on
+            if verifyBalance(remaining, val):
+                flag = False
+                newCurrent = current - cost 
+                description = input("Description of purchase: ")
 
-        entry = [name, cost, description]
-    
-        confirm = input("Confirm purchase(y/n): ")
-        if confirm == 'y':
-            self.grandparents[grandparent]["accounts"][parent]["children"][typeOfPurchase]["children"][name] = entry  
-            self.grandparents[grandparent]["accounts"][parent]["children"][typeOfPurchase]["current"] = newCurrent 
-            self.grandparents[grandparent]["accounts"][parent]["current"] = self.grandparents[grandparent]["accounts"][parent]["current"] - cost
-        else:
-            print("rip")
+                entry = [name, cost, description]
+            
+                confirm = input("Confirm purchase(y/n): ")
+                if confirm == 'y':
+                    self.grandparents[grandparent]["accounts"][parent]["children"][typeOfPurchase]["children"][name] = entry  
+                    self.grandparents[grandparent]["accounts"][parent]["children"][typeOfPurchase]["current"] = newCurrent 
+                    self.grandparents[grandparent]["accounts"][parent]["current"] = self.grandparents[grandparent]["accounts"][parent]["current"] - cost
+                else:
+                    print("rip")
+            else:
+                print("Not enough money remaing")
 
 
     #method to traverse tree and show traversal
@@ -174,6 +207,12 @@ class Schema():
 
         self.grandparents[grandparent]["accounts"][parent]["current"] = self.grandparents[grandparent]["accounts"][parent]["current"] + redistribute
         self.grandparents[grandparent]["remaining"] =  self.grandparents[grandparent]["remaining"] + redistribute
+
+    def verifyBalance(amt, current):
+        if current < amt:
+            return False 
+        return True 
+
 
 def save():
     with  open("finances", "wb") as f:    
